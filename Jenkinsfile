@@ -15,7 +15,7 @@ pipeline {
         stage('Terraform apply') {
             steps {
                 echo 'terraform apply'
-                echo 'changes from dev'
+                echo 'changes from test'
             }
         }
     }
