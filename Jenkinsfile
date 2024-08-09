@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         USER = 'ec2-user'                               // Replace with your EC2 username
-        SERVER_ADDRESS = 'server-address'      // Replace with your EC2 instance's public IP or DNS
+        SERVER_ADDRESS = credentials('dev-server-address')      // Replace with your EC2 instance's public IP or DNS
         KEY = 'my_credentials'                  // Replace with the path to your private SSH key
         REMOTE_APP_DIR = '/home/ec2-user/flask_app'     // Directory on the EC2 instance to place the app
     }
@@ -49,6 +49,7 @@ pipeline {
                 script {
                     // SSH into the EC2 instance, extract the artifact, install dependencies, and run the Flask app
                     echo 'Deploy artifact to server and start app'
+                    echo 'Deploying to $SERVER_ADDRESS'
                     // sh '''
                     //     ssh -i ${KEY} ${USER}@${SERVER_ADDRESS} << EOF
                     //     mkdir -p ${REMOTE_APP_DIR}
