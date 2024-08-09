@@ -13,7 +13,7 @@ pipeline {
             steps {
                 // Checkout the code from the current branch
                 echo 'Checkout from Dev branch'
-                checkout env.BRANCH_NAME
+                // checkout env.BRANCH_NAME
             }
         }
 
