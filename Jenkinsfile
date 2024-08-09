@@ -22,12 +22,12 @@ pipeline {
                 script {
                     // Create a tar.gz artifact from the Flask app source code and requirements.txt
                     echo 'Creating artifact'
-                    sh '''
-                        mkdir -p artifact
-                        cp -r src/ artifact/
-                        cp requirements.txt artifact/
-                        tar -czvf flask_app.tar.gz -C artifact .
-                    '''
+                    // sh '''
+                    //     mkdir -p artifact
+                    //     cp -r src/ artifact/
+                    //     cp requirements.txt artifact/
+                    //     tar -czvf flask_app.tar.gz -C artifact .
+                    // '''
                 }
             }
         }
@@ -37,9 +37,9 @@ pipeline {
                 script {
                     // Copy the artifact to the EC2 instance
                     echo 'Copy artifact to app server'
-                    sh '''
-                        scp -i ${KEY} flask_app.tar.gz ${USER}@${SERVER_ADDRESS}:${REMOTE_APP_DIR}/flask_app.tar.gz
-                    '''
+                    // sh '''
+                    //     scp -i ${KEY} flask_app.tar.gz ${USER}@${SERVER_ADDRESS}:${REMOTE_APP_DIR}/flask_app.tar.gz
+                    // '''
                 }
             }
         }
@@ -49,16 +49,16 @@ pipeline {
                 script {
                     // SSH into the EC2 instance, extract the artifact, install dependencies, and run the Flask app
                     echo 'Deploy artifact to server and start app'
-                    sh '''
-                        ssh -i ${KEY} ${USER}@${SERVER_ADDRESS} << EOF
-                        mkdir -p ${REMOTE_APP_DIR}
-                        cd ${REMOTE_APP_DIR}
-                        tar -xzvf flask_app.tar.gz
-                        cd src
-                        pip3 install -r ../requirements.txt
-                        nohup flask run > flask.log 2>&1 &
-                        EOF
-                    '''
+                    // sh '''
+                    //     ssh -i ${KEY} ${USER}@${SERVER_ADDRESS} << EOF
+                    //     mkdir -p ${REMOTE_APP_DIR}
+                    //     cd ${REMOTE_APP_DIR}
+                    //     tar -xzvf flask_app.tar.gz
+                    //     cd src
+                    //     pip3 install -r ../requirements.txt
+                    //     nohup flask run > flask.log 2>&1 &
+                    //     EOF
+                    // '''
                 }
             }
         }
