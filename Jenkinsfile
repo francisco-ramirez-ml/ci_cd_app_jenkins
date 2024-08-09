@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         USER = 'ec2-user'                               // Replace with your EC2 username
-        SERVER_ADDRESS = credentials('dev_server')      // Replace with your EC2 instance's public IP or DNS
-        KEY = credentials('ci_cd_key')                  // Replace with the path to your private SSH key
+        SERVER_ADDRESS = 'server-address'      // Replace with your EC2 instance's public IP or DNS
+        KEY = 'my_credentials'                  // Replace with the path to your private SSH key
         REMOTE_APP_DIR = '/home/ec2-user/flask_app'     // Directory on the EC2 instance to place the app
     }
 
