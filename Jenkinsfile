@@ -22,12 +22,12 @@ pipeline {
                 script {
                     // Create a tar.gz artifact from the Flask app source code and requirements.txt
                     echo 'Creating artifact'
-                    // sh '''
-                    //     mkdir -p artifact
-                    //     cp -r src/ artifact/
-                    //     cp requirements.txt artifact/
-                    //     tar -czvf flask_app.tar.gz -C artifact .
-                    // '''
+                    sh '''
+                        mkdir -p artifact
+                        cp -r src/ artifact/
+                        cp requirements.txt artifact/
+                        tar -czvf flask_app.tar.gz -C artifact .
+                    '''
                 }
             }
         }
@@ -37,9 +37,11 @@ pipeline {
                 script {
                     // Copy the artifact to the EC2 instance
                     echo 'Copy artifact to app server'
-                    // sh '''
-                    //     scp -i ${KEY} flask_app.tar.gz ${USER}@${SERVER_ADDRESS}:${REMOTE_APP_DIR}/flask_app.tar.gz
-                    // '''
+                    sshagent(['dev_server_user']){
+                        sh '''
+                            scp -o StrictHostKeyChecking=no flask_app.tar.gz ${USER}@${SERVER_ADDRESS}:${REMOTE_APP_DIR}/flask_app.tar.gz
+                        '''
+                    }
                 }
             }
         }
