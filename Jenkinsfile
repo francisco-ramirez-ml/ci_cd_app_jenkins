@@ -51,16 +51,17 @@ pipeline {
                     // SSH into the EC2 instance, extract the artifact, install dependencies, and run the Flask app
                     echo 'Deploy artifact to server and start app'
                     echo 'Deploying to $SERVER_ADDRESS'
-                    // sh '''
-                    //     ssh -i ${KEY} ${USER}@${SERVER_ADDRESS} << EOF
-                    //     mkdir -p ${REMOTE_APP_DIR}
-                    //     cd ${REMOTE_APP_DIR}
-                    //     tar -xzvf flask_app.tar.gz
-                    //     cd src
-                    //     pip3 install -r ../requirements.txt
-                    //     nohup flask run > flask.log 2>&1 &
-                    //     EOF
-                    // '''
+                    sshagent(['dev_server_user']){
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no ${USER}@${SERVER_ADDRESS} << EOF
+                            cd ${REMOTE_APP_DIR}
+                            tar -xzvf flask_app.tar.gz
+                            cd src
+                            pip3 install -r ../requirements.txt
+                            nohup flask run > flask.log 2>&1 &
+                            EOF
+                        '''
+                    }
                 }
             }
         }
