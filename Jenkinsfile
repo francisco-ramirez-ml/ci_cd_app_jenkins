@@ -55,7 +55,7 @@ pipeline {
                     echo 'Deploying to $SERVER_ADDRESS'
                     sshagent(["${SSH_CREDENTIALS}"]){
                         sh '''
-                            ssh -o StrictHostKeyChecking=no ${USER}@${SERVER_ADDRESS} << EOF
+                            ssh -o StrictHostKeyChecking=no ${USER}@${SERVER_ADDRESS} <<- 'EOF'
                             kill $(lsof -t -i:${PORT})
                             cd ${REMOTE_APP_DIR}
                             tar -xzvf flask_app.tar.gz
