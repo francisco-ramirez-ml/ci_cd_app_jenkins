@@ -56,11 +56,11 @@ pipeline {
                     sshagent(["${SSH_CREDENTIALS}"]){
                         sh '''
                             ssh -o StrictHostKeyChecking=no ${USER}@${SERVER_ADDRESS} << EOF
+                            kill $(lsof -t -i:${PORT})
                             cd ${REMOTE_APP_DIR}
                             tar -xzvf flask_app.tar.gz
                             cd src
                             pip3 install -r ../requirements.txt
-                            kill $(lsof -t -i:${PORT})
                             nohup flask run --host=0.0.0.0 --port=${PORT} > flask.log 2>&1 &
                             EOF
                         '''
