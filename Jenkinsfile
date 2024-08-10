@@ -4,7 +4,9 @@ pipeline {
     environment {
         USER = 'ec2-user'                                       // Replace with your EC2 username
         SERVER_ADDRESS = credentials('dev-server-address')      // Replace with your EC2 instance's public IP or DNS
+        SSH_CREDENTIALS = 'dev_server_user'
         REMOTE_APP_DIR = '/home/ec2-user/flask_app'             // Directory on the EC2 instance to place the app
+        PORT = '8080'
     }
 
     stages {
@@ -36,7 +38,7 @@ pipeline {
                 script {
                     // Copy the artifact to the EC2 instance
                     echo 'Copy artifact to app server'
-                    sshagent(['dev_server_user']){
+                    sshagent(["${SSH_CREDENTIALS}"]){
                         sh '''
                             scp -o StrictHostKeyChecking=no flask_app.tar.gz ${USER}@${SERVER_ADDRESS}:${REMOTE_APP_DIR}/flask_app.tar.gz
                         '''
@@ -51,14 +53,15 @@ pipeline {
                     // SSH into the EC2 instance, extract the artifact, install dependencies, and run the Flask app
                     echo 'Deploy artifact to server and start app'
                     echo 'Deploying to $SERVER_ADDRESS'
-                    sshagent(['dev_server_user']){
+                    sshagent(["${SSH_CREDENTIALS}"]){
                         sh '''
                             ssh -o StrictHostKeyChecking=no ${USER}@${SERVER_ADDRESS} << EOF
                             cd ${REMOTE_APP_DIR}
                             tar -xzvf flask_app.tar.gz
                             cd src
                             pip3 install -r ../requirements.txt
-                            nohup flask run > flask.log 2>&1 &
+                            kill $(lsof -t -i:${PORT})
+                            nohup flask run --host=0.0.0.0 --port=${PORT} > flask.log 2>&1 &
                             EOF
                         '''
                     }
